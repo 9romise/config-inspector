@@ -210,7 +210,13 @@ export async function readConfig(
       ...c,
       index: idx,
       plugins: c.plugins
-        ? Object.fromEntries(Object.entries(c.plugins ?? {}).map(([prefix]) => [prefix, {}]).filter(i => i[0]))
+        ? Object.fromEntries(
+            Object.entries(c.plugins ?? {})
+              .flatMap(([namespace, plugin]) => plugin.meta?.name
+                ? [[namespace, plugin.meta.name as any]]
+                : [],
+              ),
+          )
         : undefined,
       languageOptions: c.languageOptions
         ? {
